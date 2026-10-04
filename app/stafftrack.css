@@ -21,3 +21,5 @@
 .task-delete-row{margin:16px 0 24px}
 .delete-confirm{background:#b42332!important;color:#fff!important}
 .delete-confirm:hover{background:#941c29!important}
+.task-meta .meta-edit{display:block;margin:5px 0 0 auto;font-size:13px!important}
+.edit-task-note{padding:12px;background:#f3f0fc;border-radius:8px;color:#6b5b96;font-size:14px;line-height:1.6;margin-bottom:16px}
