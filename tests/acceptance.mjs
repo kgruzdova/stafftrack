@@ -30,7 +30,7 @@ await manager('tasks/'+t.id+'/reject','POST',{reason:'Добавьте итог�
 assert.equal((await employee('tasks/'+t.id)).status,'progress');
 await employee('tasks/'+t.id+'/status','PATCH',{status:'review'});
 const results=await Promise.all([manager('tasks/'+t.id+'/approve','POST',{}),manager('tasks/'+t.id+'/approve','POST',{}).catch(err=>{assert.match(err.message,/409/);return null})]);
-const state=await employee('state');assert.equal(state.me.points,75);assert.equal(state.tasks.find(x=>x.id===t.id).status,'done');assert.equal(state.ledger.filter(x=>x.reference===t.id).length,1);assert(state.notifications.some(x=>x.title.includes('Начислено 75')));assert.equal((await employee('tasks/'+t.id)).attachments.length,1);
+const state=await employee('state');assert.equal(state.me.points,75);assert.equal(state.tasks.find(x=>x.id===t.id).status,'done');assert.equal(state.ledger.filter(x=>x.reference===`${t.id}:${e.id}`||x.reference===t.id).length,1);assert(state.notifications.some(x=>x.title.includes('Начислено 75')));assert.equal((await employee('tasks/'+t.id)).attachments.length,1);
 await manager('tasks/'+t.id+'/approve','POST',{},409);
 await manager('points/bonus','POST',{user_id:e.id,amount:100,reason:''},400);
 await manager('points/bonus','POST',{user_id:e.id,amount:100,reason:'Помощь команде'});

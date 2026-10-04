@@ -15,6 +15,13 @@
       "when": 1791151733508,
       "tag": "0001_last_vance_astro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791152634906,
+      "tag": "0002_thick_slyde",
+      "breakpoints": true
     }
   ]
 }

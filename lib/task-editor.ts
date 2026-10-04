@@ -28,16 +28,16 @@ export async function saveTask(c: Context, user: Row, body: Row, existing?: Row)
   const id = existing?.id ?? crypto.randomUUID(), time = new Date().toISOString();
   const reassigned = existing && (ids.length !== existing.assignee_ids.length || ids.some(uid => !existing.assignee_ids.includes(uid)));
   const status = reassigned && existing.status === 'review' ? 'progress' : existing?.status ?? 'new';
-  const statements = existing ? [c.q("UPDATE tasks SET title=?,description=?,assignee_id=?,deadline=?,priority=?,points=?,status=?,completed_at=CASE WHEN ?='progress' THEN NULL ELSE completed_at END WHERE id=? AND company_id=? AND status!='done'", title, description, ids[0], deadline.toISOString(), priority, points, status, status, id, user.company_id)] : [c.q('INSERT INTO tasks (id,company_id,title,description,assignee_id,author_id,deadline,priority,points,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)', id, user.company_id, title, description, ids[0], user.id, deadline.toISOString(), priority, points, time)];
+  const statements = existing ? [c.q("UPDATE tasks SET title=?,description=?,assignee_id=?,deadline=?,priority=?,points=?,status=?,completed_at=CASE WHEN ?='progress' THEN NULL ELSE completed_at END WHERE id=? AND company_id=? AND status!='done' AND deleted_at IS NULL", title, description, ids[0], deadline.toISOString(), priority, points, status, status, id, user.company_id)] : [c.q('INSERT INTO tasks (id,company_id,title,description,assignee_id,author_id,deadline,priority,points,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)', id, user.company_id, title, description, ids[0], user.id, deadline.toISOString(), priority, points, time)];
   // All membership writes are guarded in the same atomic D1 batch. If approval
   // finished first, neither fields nor memberships of the accepted task change.
-  const guard = "EXISTS (SELECT 1 FROM tasks WHERE id=? AND status!='done')";
+  const guard = "EXISTS (SELECT 1 FROM tasks WHERE id=? AND status!='done' AND deleted_at IS NULL)";
   if (existing) statements.push(c.q(`DELETE FROM task_assignees WHERE task_id=? AND ${guard}`, id, id));
   for (const uid of ids) statements.push(c.q(`INSERT OR IGNORE INTO task_assignees (task_id,user_id) SELECT ?,? WHERE ${guard}`, id, uid, id));
   const audit = existing ? `Изменил(а) задачу: название, описание, срок, приоритет — ${priority}, баллы — ${points}; исполнители: ${people.map(p => p.name).join(', ')}` : 'Создал(а) задачу';
   statements.push(c.q(`INSERT INTO activity (id,task_id,user_id,body,created_at) SELECT ?,?,?,?,? WHERE ${guard}`, crypto.randomUUID(), id, user.id, audit, time, id));
   for (const uid of ids) statements.push(c.q(`INSERT INTO notifications (id,company_id,user_id,title,task_id,created_at) SELECT ?,?,?,?,?,? WHERE ${guard}`, crypto.randomUUID(), user.company_id, uid, `${existing ? 'Обновлена' : 'Новая'} задача «${title}»`, id, time, id));
   const result = await c.db().batch(statements);
-  if (existing && !result[0].meta.changes) c.fail(409, 'Задача уже принята. Обновите карточку');
+  if (existing && !result[0].meta.changes) c.fail(409, 'Задача уже принята или удалена. Обновите список');
   return { id };
 }

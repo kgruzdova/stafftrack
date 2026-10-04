@@ -14,3 +14,10 @@
 .assignee-picker legend{font-size:14px;font-weight:600;padding:0 4px}
 .assignee-picker label{display:flex;align-items:center;gap:10px;padding:8px 4px;cursor:pointer;font-size:14px}
 .assignee-picker small{display:block;color:#777489;font-size:13px}
+.task-status-control{margin:18px 0;padding:14px;background:#f7f6fc;border-radius:10px}
+.task-status-control>label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+.task-status-control>div{display:flex;align-items:center;gap:8px}
+.task-status-control [data-slot="select-trigger"]{flex:1;min-width:0}
+.task-delete-row{margin:16px 0 24px}
+.delete-confirm{background:#b42332!important;color:#fff!important}
+.delete-confirm:hover{background:#941c29!important}

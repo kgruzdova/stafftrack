@@ -35,7 +35,7 @@ assert.equal((await a('tasks/'+task.id)).status,'progress');
 await a('tasks/'+task.id+'/status','PATCH',{status:'review'});
 await Promise.all([admin('tasks/'+task.id+'/approve','POST',{}),admin('tasks/'+task.id+'/approve','POST',{}).catch(error=>assert.match(error.message,/409/))]);
 assert.equal((await a('state')).me.points,60);assert.equal((await b('state')).me.points,60);
-const ledger=(await admin('state')).ledger.filter(l=>l.reference===task.id||l.reference===`${task.id}:${ub.id}`);
+const ledger=(await admin('state')).ledger.filter(l=>l.reference===task.id||l.reference?.startsWith(`${task.id}:`));
 assert.equal(ledger.length,2);
 const rating=await admin('rating?period=all');assert.equal(rating.find(u=>u.id===ua.id).completed,1);assert.equal(rating.find(u=>u.id===ub.id).completed,1);
 await admin('tasks/'+task.id,'PATCH',{points:999},409);

@@ -8,6 +8,9 @@ if(check.stdout.includes('"name": "users"')||check.stdout.includes('"name":"user
  const members=spawnSync(process.execPath,[...args,'--command',"SELECT name FROM sqlite_master WHERE type='table' AND name='task_assignees'",'--json'],{encoding:'utf8'});
  if(members.status!==0){console.error(members.stderr||members.stdout);process.exit(1)}
  if(!members.stdout.includes('"task_assignees"')){const update=spawnSync(process.execPath,[...args,'--file','drizzle/0001_last_vance_astro.sql'],{stdio:'inherit'});if(update.status!==0)process.exit(update.status||1)}
+ const columns=spawnSync(process.execPath,[...args,'--command',"PRAGMA table_info(tasks)",'--json'],{encoding:'utf8'});
+ if(columns.status!==0){console.error(columns.stderr||columns.stdout);process.exit(1)}
+ if(!columns.stdout.includes('"deleted_at"')){const update=spawnSync(process.execPath,[...args,'--file','drizzle/0002_thick_slyde.sql'],{stdio:'inherit'});if(update.status!==0)process.exit(update.status||1)}
  console.log('Локальная база готова. Существующие данные сохранены.');process.exit(0)
 }
 for(const file of readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort()){const r=spawnSync(process.execPath,[...args,'--file','drizzle/'+file],{stdio:'inherit'});if(r.status!==0)process.exit(r.status||1)}
