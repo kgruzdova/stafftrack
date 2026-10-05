@@ -6,8 +6,8 @@ import { createServer as createViteServer } from 'vite';
 
 // Run the server's acceptance suites against the SQLite adapter shipped to Pages.
 const vite = await createViteServer({ configFile: 'vite.pages.config.ts', root: process.cwd(), server: { middlewareMode: true, hmr: false, ws: false } });
-const { BrowserDatabase } = await vite.ssrLoadModule('/pages/d1-adapter.ts');
-const { env } = await vite.ssrLoadModule('/pages/bindings.ts');
+const { BrowserDatabase } = await vite.ssrLoadModule('/standalone/d1-adapter.ts');
+const { env } = await vite.ssrLoadModule('/standalone/bindings.ts');
 const { handle } = await vite.ssrLoadModule('/lib/server.ts');
 const SQL = await initSqlJs();
 const sqlite = new SQL.Database();

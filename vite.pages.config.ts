@@ -5,12 +5,12 @@ import react from '@vitejs/plugin-react';
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
-  root: fileURLToPath(new URL('./pages', import.meta.url)),
+  root: fileURLToPath(new URL('./standalone', import.meta.url)),
   base: process.env.PAGES_BASE_PATH || '/stafftrack/',
   plugins: [react()],
   resolve: { alias: {
     '@': projectRoot,
-    'cloudflare:workers': fileURLToPath(new URL('./pages/bindings.ts', import.meta.url)),
+    'cloudflare:workers': fileURLToPath(new URL('./standalone/bindings.ts', import.meta.url)),
   } },
   publicDir: fileURLToPath(new URL('./public', import.meta.url)),
   css: { postcss: projectRoot },
