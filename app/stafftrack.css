@@ -23,3 +23,4 @@
 .delete-confirm:hover{background:#941c29!important}
 .task-meta .meta-edit{display:block;margin:5px 0 0 auto;font-size:13px!important}
 .edit-task-note{padding:12px;background:#f3f0fc;border-radius:8px;color:#6b5b96;font-size:14px;line-height:1.6;margin-bottom:16px}
+.local-storage-note{margin:0 0 20px;padding:10px 14px;background:#f3f0fc;color:#6b5b96;border-radius:8px;font-size:13px;line-height:1.5}
